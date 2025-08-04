@@ -13,12 +13,14 @@ let gameRunning = true;
 let audioContext = null;
 let popBuffer = null;
 let missBuffer = null;
+// Optional: tambahkan bombBuffer dan heartBuffer jika ada suara
+
 let audioReady = false;
 
 updateBasketPosition();
 updateScore();
 
-// Load audio (tanpa hentikan game)
+// Load audio
 document.addEventListener('click', async () => {
     if (!audioReady) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -43,13 +45,8 @@ function playSound(buffer) {
     source.start(0);
 }
 
-function playCatchSound() {
-    playSound(popBuffer);
-}
-
-function playMissSound() {
-    playSound(missBuffer);
-}
+function playCatchSound() { playSound(popBuffer); }
+function playMissSound() { playSound(missBuffer); }
 
 function updateBasketPosition() {
     const maxX = gameArea.clientWidth - basket.offsetWidth;
@@ -89,15 +86,33 @@ function moveBasketToTouch(x) {
     updateBasketPosition();
 }
 
+// ✅ Fungsi baru: Buat bola berdasarkan tipe (normal, bomb, heart)
 function createBall() {
     if (!gameRunning) return;
 
+    // Tentukan jenis bola
+    let type = 'normal';
+    const random = Math.random();
+    if (random < 0.1) type = 'bomb';      // 10% bom
+    else if (random < 0.15) type = 'heart'; // 5% hati
+
     const ball = document.createElement('div');
     ball.classList.add('ball');
+
+    // Set gambar sesuai tipe
+    if (type === 'bomb') {
+        ball.style.backgroundImage = "url('images/bomb.png')";
+    } else if (type === 'heart') {
+        ball.style.backgroundImage = "url('images/heart.png')";
+    } else {
+        ball.style.backgroundImage = "url('images/bola.png')";
+    }
+
     ball.style.left = Math.random() * (gameArea.clientWidth - 40) + 'px';
     gameArea.appendChild(ball);
 
     let ballY = 0;
+
     const fallInterval = setInterval(() => {
         if (!gameRunning) {
             ball.remove();
@@ -105,7 +120,9 @@ function createBall() {
             return;
         }
 
-        ballY += 5;
+        // Kecepatan meningkat berdasarkan skor
+        let fallSpeed = 5 + Math.floor(score / 10);
+        ballY += fallSpeed;
         ball.style.top = ballY + 'px';
 
         const ballRect = ball.getBoundingClientRect();
@@ -116,26 +133,43 @@ function createBall() {
             ballRect.left >= basketRect.left &&
             ballRect.right <= basketRect.right
         ) {
-            score++;
-            animateScoreChange(scoreValue);
-            basket.classList.add('catch');
-            setTimeout(() => basket.classList.remove('catch'), 300);
-            playCatchSound();
-            updateScore();
+            if (type === 'bomb') {
+                lives--;
+                animateScoreChange(livesValue);
+                updateScore();
+                playMissSound();
+            } else if (type === 'heart') {
+                if (lives < 5) lives++;
+                animateScoreChange(livesValue);
+                updateScore();
+                // Tambahkan suara jika ada
+            } else {
+                score++;
+                animateScoreChange(scoreValue);
+                basket.classList.add('catch');
+                setTimeout(() => basket.classList.remove('catch'), 300);
+                playCatchSound();
+                updateScore();
+            }
+
             ball.remove();
             clearInterval(fallInterval);
+
+            if (lives <= 0) endGame();
         }
 
         if (ballY > gameArea.clientHeight) {
-            lives--;
-            animateScoreChange(livesValue);
-            playMissSound();
-            updateScore();
+            // Jika bola biasa atau heart tidak tertangkap, tidak ada penalti
+            if (type === 'normal') {
+                lives--;
+                animateScoreChange(livesValue);
+                updateScore();
+                playMissSound();
+                if (lives <= 0) endGame();
+            }
+
             ball.remove();
             clearInterval(fallInterval);
-            if (lives <= 0) {
-                endGame();
-            }
         }
     }, 20);
 }
@@ -155,9 +189,12 @@ restartBtn.addEventListener('click', () => {
     gameRunning = true;
 });
 
-// Start balls immediately
+// Bola muncul lebih dari satu (dinamis)
 setInterval(() => {
-    if (gameRunning) {
-        createBall();
-    }
+    if (!gameRunning) return;
+
+    createBall();
+
+    if (score >= 10) createBall();
+    if (score >= 30) createBall();
 }, 1000);
