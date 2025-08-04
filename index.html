@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Catch the Ball</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div id="gameArea">
+        <!-- Panel Skor -->
+        <div id="scorePanel">
+            <div class="scoreItem">
+                <img src="images/code.png" alt="Score" />
+                <span id="scoreValue">0</span>
+            </div>
+            <div class="scoreItem">
+                <img src="images/love.png" alt="Lives" />
+                <span id="livesValue">3</span>
+            </div>
+        </div>
+
+        <!-- Keranjang -->
+        <div id="basket"></div>
+    </div>
+
+    <!-- Game Over -->
+    <div id="gameOver">
+        <p class="claimText">Claim Your Code</p>
+        <a href="https://x.com/Ethereum_OS" target="_blank" id="claimBtn">CLAIM</a>
+        <button id="restartBtn">Play Again</button>
+    </div>
+
+    <!-- Audio -->
+    <audio id="catchSound" src="sounds/pop.mp3" preload="auto"></audio>
+    <audio id="missSound" src="sounds/miss.mp3" preload="auto"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>

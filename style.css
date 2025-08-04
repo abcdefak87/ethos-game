@@ -1,0 +1,142 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to top right, #00b4d8, #90e0ef);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#gameArea {
+    position: relative;
+    width: 90vw;
+    height: 75vh;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Panel Skor */
+#scorePanel {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(6px);
+    padding: 6px 16px;
+    border-radius: 12px;
+}
+
+.scoreItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 20px;
+    color: #fff;
+    font-weight: bold;
+}
+
+.scoreItem img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.scoreChange { animation: pop 0.3s ease; }
+@keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.4); }
+    100% { transform: scale(1); }
+}
+
+/* Keranjang */
+#basket {
+    position: absolute;
+    bottom: 10px;
+    width: 100vw;
+    max-width: 150px;
+    aspect-ratio: 5 / 3;
+    background-image: url('images/basket.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#basket.catch { animation: basketShake 0.3s ease; }
+@keyframes basketShake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}
+
+/* Bola */
+.ball {
+    position: absolute;
+    width: 5vw;
+    max-width: 40px;
+    aspect-ratio: 1 / 1;
+    background-image: url('images/bola.png');
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Game Over */
+#gameOver {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: #fff;
+    text-align: center;
+    gap: 20px;
+}
+
+.claimText { font-size: 24px; }
+
+#claimBtn {
+    background-color: #ffd700;
+    color: #000;
+    padding: 12px 24px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: transform 0.2s, background 0.3s;
+}
+
+#claimBtn:hover {
+    background-color: #ffcc00;
+    transform: scale(1.05);
+}
+
+#restartBtn {
+    background-color: #ff6347;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.3s;
+}
+
+#restartBtn:hover { background-color: #ff7f50;}
